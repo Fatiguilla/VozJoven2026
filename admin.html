@@ -1,8 +1,407 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panel de publicación | La Voz Joven</title><link rel="stylesheet" href="styles.css"></head><body><header class="site-header"><div class="container header-inner"><a class="brand" href="index.html"><img src="assets/logo-la-voz-joven.jpeg" alt="La Voz Joven" style="max-width:210px;max-height:70px;object-fit:contain"></a><a href="index.html" class="nav-back">← Volver al periódico</a></div></header><main class="admin-page"><div class="admin-card"><span class="section-kicker">ÁREA DE REDACCIÓN</span><h1>Panel de publicación</h1><p>Inicia sesión para redactar y publicar noticias en la sección correspondiente.</p><div class="security-note"><strong>Prototipo local:</strong> la contraseña de esta demostración es <code>VozJoven2026</code>. Como el proyecto funciona solo con HTML/JavaScript, esta comprobación no es seguridad real y los datos e imágenes quedan en este navegador. Para un periódico publicado en internet, debe reemplazarse por acceso seguro en servidor y almacenamiento compartido.</div><form id="loginForm"><label for="password">Contraseña de redacción</label><input id="password" type="password" autocomplete="current-password" required placeholder="Escribe la contraseña"><button class="btn btn-primary" type="submit">Ingresar</button><p id="loginMessage" role="status"></p></form><form id="newsForm" class="hidden"><div class="admin-grid"><div><label for="title">Titular de la noticia *</label><input id="title" required maxlength="140" placeholder="Escribe un titular claro"></div><div><label for="category">Sección *</label><select id="category" required><option>Presentación</option><option>Opinión personal</option><option>Educación</option><option>Salud</option><option>Cultura</option><option>Investigación</option><option>Desarrollo local</option><option>Deporte</option><option>Matando el tiempo</option><option>Tu opinión cuenta</option><option>Clasificados</option></select></div><div><label for="date">Fecha de publicación *</label><input id="date" type="date" required></div><div><label for="author">Autor / fuente</label><input id="author" maxlength="100" placeholder="Nombre del periodista"></div></div><label for="summary">Resumen para la página principal</label><textarea id="summary" rows="3" maxlength="350" placeholder="Una síntesis breve que aparecerá junto al titular."></textarea><label for="cover">Fotografía principal *</label><input id="cover" type="file" accept="image/*" required><div id="coverPreview" class="upload-preview"></div><div class="admin-grid"><div><label for="coverAlt">Descripción de la foto</label><input id="coverAlt" placeholder="Qué aparece en la fotografía"></div><div><label for="coverCaption">Pie de foto</label><input id="coverCaption" placeholder="Lugar, fecha o crédito fotográfico"></div></div><label for="gallery">Fotografías adicionales (opcional)</label><input id="gallery" type="file" accept="image/*" multiple><div id="galleryPreview" class="upload-preview"></div><label for="content">Contenido completo de la noticia *</label><textarea id="content" required placeholder="Redacta aquí la noticia completa. Separa los párrafos con una línea en blanco."></textarea><div class="admin-actions"><button class="btn btn-primary" type="submit">Publicar noticia</button><button class="btn btn-ghost" id="clearForm" type="button">Limpiar formulario</button><button class="btn btn-ghost" id="logout" type="button">Cerrar sesión</button></div><p id="publishMessage" role="status"></p></form></div></main><script src="newsroom.js"></script><script>
-// Contraseña de demostración para uso local únicamente; no es una barrera de seguridad para producción.
-const DEMO_PASSWORD='VozJoven2026';const loginForm=document.querySelector('#loginForm'),newsForm=document.querySelector('#newsForm'),loginMessage=document.querySelector('#loginMessage');const params=new URLSearchParams(location.search);const catBySlug={'presentacion':'Presentación','opinion-personal':'Opinión personal','educacion':'Educación','salud':'Salud','cultura':'Cultura','investigacion':'Investigación','desarrollo-local':'Desarrollo local','deporte':'Deporte','matando-el-tiempo':'Matando el tiempo','tu-opinion-cuenta':'Tu opinión cuenta','clasificados':'Clasificados'};if(catBySlug[params.get('seccion')])document.querySelector('#category').value=catBySlug[params.get('seccion')];document.querySelector('#date').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
-loginForm.addEventListener('submit',e=>{e.preventDefault();if(document.querySelector('#password').value===DEMO_PASSWORD){loginForm.classList.add('hidden');newsForm.classList.remove('hidden');}else loginMessage.textContent='Contraseña incorrecta. Intenta nuevamente.';});
-function readImage(file){return new Promise((resolve,reject)=>{if(!file){resolve(null);return;}if(!file.type.startsWith('image/')){reject(new Error('Selecciona archivos de imagen.'));return;}if(file.size>1200000){reject(new Error('Cada imagen debe pesar menos de 1,2 MB para que el navegador pueda guardarla. Reduce su tamaño e inténtalo de nuevo.'));return;}const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(file);});}
-document.querySelector('#cover').addEventListener('change',async e=>{const box=document.querySelector('#coverPreview');box.innerHTML='';try{const src=await readImage(e.target.files[0]);if(src)box.innerHTML=`<img src="${src}" alt="Vista previa de portada">`;}catch(err){alert(err.message);e.target.value='';}});document.querySelector('#gallery').addEventListener('change',async e=>{const box=document.querySelector('#galleryPreview');box.innerHTML='';try{for(const file of [...e.target.files]){const src=await readImage(file);box.insertAdjacentHTML('beforeend',`<img src="${src}" alt="Vista previa de galería">`);}}catch(err){alert(err.message);e.target.value='';box.innerHTML='';}});
-newsForm.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#publishMessage');try{const cover=await readImage(document.querySelector('#cover').files[0]);const gallery=[];for(const file of [...document.querySelector('#gallery').files])gallery.push({src:await readImage(file),alt:'Fotografía adicional',caption:''});const post={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),title:document.querySelector('#title').value.trim(),category:document.querySelector('#category').value,date:document.querySelector('#date').value,author:document.querySelector('#author').value.trim(),summary:document.querySelector('#summary').value.trim(),text:document.querySelector('#content').value.trim(),cover,coverAlt:document.querySelector('#coverAlt').value.trim(),coverCaption:document.querySelector('#coverCaption').value.trim(),gallery,createdAt:Date.now()};const posts=lvjPosts();posts.push(post);lvjSave(posts);msg.innerHTML=`✓ Noticia guardada en este navegador. <a href="articulo.html?id=${encodeURIComponent(post.id)}">Vista previa de la noticia</a> · <a href="${lvjSlug(post.category)}.html">Ver sección</a> · <a href="index.html">Página principal</a>`;newsForm.reset();document.querySelector('#date').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);document.querySelector('#coverPreview').innerHTML='';document.querySelector('#galleryPreview').innerHTML='';}catch(err){msg.textContent=err.message||'No se pudo guardar la publicación.';}});document.querySelector('#clearForm').addEventListener('click',()=>{newsForm.reset();document.querySelector('#date').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);document.querySelector('#coverPreview').innerHTML='';document.querySelector('#galleryPreview').innerHTML='';});document.querySelector('#logout').addEventListener('click',()=>{newsForm.classList.add('hidden');loginForm.classList.remove('hidden');document.querySelector('#password').value='';});
-</script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel de publicación | La Voz Joven</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img
+          src="assets/logo-la-voz-joven.jpeg"
+          alt="La Voz Joven"
+          style="max-width:210px;max-height:70px;object-fit:contain"
+        >
+      </a>
+      <a href="index.html" class="nav-back">
+        ← Volver al periódico
+      </a>
+    </div>
+  </header>
+
+  <main class="admin-page">
+    <div class="admin-card">
+      <span class="section-kicker">ÁREA DE REDACCIÓN</span>
+      <h1>Panel de publicación</h1>
+      <p>Administra las noticias de La Voz Joven.</p>
+
+      <!-- ACCESO CON CONTRASEÑA -->
+      <form id="loginForm">
+        <label for="password">Contraseña de acceso</label>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          placeholder="Escribe la contraseña"
+        >
+
+        <button class="btn btn-primary" type="submit">
+          Ingresar al panel
+        </button>
+
+        <p id="loginMessage" role="status"></p>
+      </form>
+
+      <!-- PANEL DE NOTICIAS -->
+      <section id="editorPanel" hidden>
+        <h2>Nueva noticia</h2>
+        <p id="sessionMessage" role="status">
+          Acceso al panel habilitado.
+        </p>
+
+        <form id="newsForm">
+          <label for="title">Título de la noticia</label>
+          <input id="title" type="text" required maxlength="200">
+
+          <label for="category">Sección</label>
+          <select id="category" required>
+            <option value="">Selecciona una sección</option>
+            <option value="educacion">Educación</option>
+            <option value="salud">Salud</option>
+            <option value="cultura">Cultura</option>
+            <option value="investigacion">Investigación</option>
+            <option value="desarrollo-local">Desarrollo local</option>
+            <option value="deporte">Deporte</option>
+            <option value="opinion">Presentación y opinión personal</option>
+            <option value="matando-el-tiempo">Matando el tiempo</option>
+            <option value="tu-opinion-cuenta">Tu opinión cuenta</option>
+            <option value="clasificados">Clasificados</option>
+          </select>
+
+          <label for="date">Fecha de publicación</label>
+          <input id="date" type="date" required>
+
+          <label for="author">Autor o autora</label>
+          <input id="author" type="text" maxlength="150">
+
+          <label for="summary">Resumen</label>
+          <textarea
+            id="summary"
+            rows="3"
+            maxlength="500"
+            placeholder="Breve presentación de la noticia"
+          ></textarea>
+
+          <label for="content">Contenido completo</label>
+          <textarea
+            id="content"
+            rows="10"
+            required
+            placeholder="Redacta aquí la noticia"
+          ></textarea>
+
+          <label for="cover">Fotografía de portada</label>
+          <input id="cover" type="file" accept="image/*">
+
+          <img
+            id="coverPreview"
+            alt="Vista previa de la fotografía"
+            hidden
+            style="max-width:100%;max-height:280px;object-fit:contain;margin-top:12px"
+          >
+
+          <label for="coverAlt">Descripción de la fotografía</label>
+          <input id="coverAlt" type="text" maxlength="250">
+
+          <label for="coverCaption">Pie de fotografía</label>
+          <input id="coverCaption" type="text" maxlength="250">
+
+          <label for="gallery">Enlaces de fotos adicionales (opcional)</label>
+          <textarea
+            id="gallery"
+            rows="3"
+            placeholder="Un enlace por línea, si ya tienes las fotos alojadas en internet"
+          ></textarea>
+
+          <button class="btn btn-primary" type="submit">
+            Publicar noticia
+          </button>
+
+          <button class="btn btn-ghost" id="clearForm" type="button">
+            Limpiar formulario
+          </button>
+
+          <button class="btn btn-ghost" id="logout" type="button">
+            Cerrar sesión
+          </button>
+
+          <p id="publishMessage" role="status"></p>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    'use strict';
+
+    // CONFIGURACIÓN DE SUPABASE
+    // La URL debe ser la dirección raíz, sin /rest/v1/
+    const SUPABASE_URL =
+      'https://wsfdjmhpfqwunyguloqo.supabase.co';
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      'sb_publishable_-1dCf4mJ0AgDVKXXUt7Z9g_wOA-jgmt';
+
+    // CONTRASEÑA SENCILLA DE PRUEBA
+    const ADMIN_PASSWORD = '12345';
+
+    const $ = (selector) => document.querySelector(selector);
+
+    const loginForm = $('#loginForm');
+    const editorPanel = $('#editorPanel');
+    const newsForm = $('#newsForm');
+    const loginMessage = $('#loginMessage');
+    const publishMessage = $('#publishMessage');
+    const coverInput = $('#cover');
+    const coverPreview = $('#coverPreview');
+
+    let supabaseClient = null;
+    let isUnlocked = false;
+    let previewUrl = null;
+
+    function setToday() {
+      const now = new Date();
+      const localDate = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+      ).toISOString().slice(0, 10);
+
+      $('#date').value = localDate;
+    }
+
+    // INGRESO CON CONTRASEÑA
+    function login(event) {
+      event.preventDefault();
+
+      const password = $('#password').value;
+
+      if (password === ADMIN_PASSWORD) {
+        isUnlocked = true;
+        loginForm.hidden = true;
+        editorPanel.hidden = false;
+        loginMessage.textContent = '';
+        $('#password').value = '';
+        $('#sessionMessage').textContent =
+          'Acceso al panel habilitado.';
+      } else {
+        loginMessage.textContent =
+          'Contraseña incorrecta. Intenta nuevamente.';
+        $('#password').value = '';
+        $('#password').focus();
+      }
+    }
+
+    // SUBIR FOTOGRAFÍA A SUPABASE
+    async function uploadImage(file) {
+      if (!file) return null;
+
+      if (!file.type.startsWith('image/')) {
+        throw new Error('El archivo seleccionado no es una imagen.');
+      }
+
+      const maxSize = 5 * 1024 * 1024;
+
+      if (file.size > maxSize) {
+        throw new Error(
+          'La fotografía supera los 5 MB. Elige una imagen más pequeña.'
+        );
+      }
+
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const filePath =
+        'public/' + crypto.randomUUID() + '-' + safeName;
+
+      const { error } = await supabaseClient.storage
+        .from('noticias')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      const { data } = supabaseClient.storage
+        .from('noticias')
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    }
+
+    // PUBLICAR NOTICIA
+    async function publishNews(event) {
+      event.preventDefault();
+
+      if (!isUnlocked) {
+        publishMessage.textContent =
+          'Ingresa la contraseña para publicar.';
+        return;
+      }
+
+      const submitButton = newsForm.querySelector(
+        'button[type="submit"]'
+      );
+
+      submitButton.disabled = true;
+      publishMessage.textContent = 'Publicando noticia...';
+
+      try {
+        let coverUrl = null;
+
+        if (coverInput.files && coverInput.files[0]) {
+          coverUrl = await uploadImage(coverInput.files[0]);
+        }
+
+        const gallery = $('#gallery').value
+          .split('\n')
+          .map(url => url.trim())
+          .filter(Boolean)
+          .map(url => ({
+            url,
+            alt: ''
+          }));
+
+        const post = {
+          title: $('#title').value.trim(),
+          category: $('#category').value,
+          date: $('#date').value,
+          author: $('#author').value.trim() || null,
+          summary: $('#summary').value.trim() || null,
+          content: $('#content').value.trim(),
+          cover_url: coverUrl,
+          cover_alt: $('#coverAlt').value.trim() || null,
+          cover_caption: $('#coverCaption').value.trim() || null,
+          gallery
+        };
+
+        const { error } = await supabaseClient
+          .from('posts')
+          .insert([post]);
+
+        if (error) throw error;
+
+        publishMessage.textContent =
+          '¡Noticia publicada correctamente!';
+
+        newsForm.reset();
+        setToday();
+
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl);
+          previewUrl = null;
+        }
+
+        coverPreview.removeAttribute('src');
+        coverPreview.hidden = true;
+
+      } catch (error) {
+        console.error('Error al publicar:', error);
+        publishMessage.textContent =
+          'No se pudo publicar la noticia: ' + error.message;
+      } finally {
+        submitButton.disabled = false;
+      }
+    }
+
+    // VISTA PREVIA DE LA FOTOGRAFÍA
+    function previewCover() {
+      const file = coverInput.files && coverInput.files[0];
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
+
+      if (!file) {
+        coverPreview.removeAttribute('src');
+        coverPreview.hidden = true;
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        publishMessage.textContent =
+          'Selecciona un archivo de imagen válido.';
+        coverInput.value = '';
+        coverPreview.hidden = true;
+        return;
+      }
+
+      previewUrl = URL.createObjectURL(file);
+      coverPreview.src = previewUrl;
+      coverPreview.hidden = false;
+      publishMessage.textContent = '';
+    }
+
+    // LIMPIAR FORMULARIO
+    function clearNewsForm() {
+      newsForm.reset();
+      setToday();
+      publishMessage.textContent = '';
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
+
+      coverPreview.removeAttribute('src');
+      coverPreview.hidden = true;
+    }
+
+    // CERRAR EL PANEL
+    function logout() {
+      isUnlocked = false;
+      editorPanel.hidden = true;
+      loginForm.hidden = false;
+      loginMessage.textContent =
+        'Has cerrado el acceso al panel.';
+      publishMessage.textContent = '';
+      newsForm.reset();
+      setToday();
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
+      }
+
+      coverPreview.removeAttribute('src');
+      coverPreview.hidden = true;
+      $('#password').focus();
+    }
+
+    // INICIAR APLICACIÓN
+    try {
+      if (
+        !SUPABASE_URL.startsWith('https://') ||
+        !SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_')
+      ) {
+        throw new Error(
+          'Revisa la URL y la clave publicable de Supabase.'
+        );
+      }
+
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+      loginForm.addEventListener('submit', login);
+      newsForm.addEventListener('submit', publishNews);
+      $('#logout').addEventListener('click', logout);
+      $('#clearForm').addEventListener('click', clearNewsForm);
+      coverInput.addEventListener('change', previewCover);
+
+      setToday();
+
+    } catch (error) {
+      loginMessage.textContent =
+        'Error de configuración: ' + error.message;
+      console.error(error);
+    }
+  </script>
+</body>
+</html>
