@@ -1,4 +1,3 @@
-```javascript
 const LVJ_KEY = 'lvj_publicaciones_v2';
 
 // =============================================
@@ -88,7 +87,6 @@ const lvjDate = value => {
   if (
     parts.length !== 3 ||
     parts.some(Number.isNaN) ||
-    parts[0] < 1 ||
     parts[1] < 1 ||
     parts[1] > 12 ||
     parts[2] < 1 ||
@@ -199,7 +197,7 @@ async function lvjPosts() {
   }
 }
 
-// Compatibilidad con el código antiguo.
+// Compatibilidad con el código antiguo
 const lvjSave = posts => {
   localStorage.setItem(LVJ_KEY, JSON.stringify(posts));
 };
@@ -241,9 +239,7 @@ function lvjCard(post) {
         ${lvjEsc(lvjDate(post.date))}
       </p>
 
-      ${post.summary
-        ? `<p>${lvjEsc(post.summary)}</p>`
-        : ''}
+      ${post.summary ? `<p>${lvjEsc(post.summary)}</p>` : ''}
 
       <div class="publication-card__footer">
         <small>
@@ -374,14 +370,13 @@ async function lvjSectionRender(category) {
 
 // =============================================
 // MOSTRAR UN ARTÍCULO INDIVIDUAL
-// CONSULTA DIRECTA POR ID EN SUPABASE
+// CONSULTA DIRECTA POR ID
 // =============================================
 async function lvjArticleRender() {
   const container = document.querySelector('#articleContent');
   if (!container) return;
 
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
+  const id = new URLSearchParams(window.location.search).get('id');
 
   if (!id) {
     container.innerHTML = `
@@ -447,10 +442,8 @@ async function lvjArticleRender() {
     const post = lvjFromDatabase(row);
     const gallery = Array.isArray(post.gallery) ? post.gallery : [];
 
-    const categoryUrl = `${lvjSlug(post.category)}.html`;
-
     container.innerHTML = `
-      <a class="section-kicker" href="${categoryUrl}">
+      <a class="section-kicker" href="${lvjSlug(post.category)}.html">
         ${lvjEsc(post.category)}
       </a>
 
@@ -537,4 +530,3 @@ window.lvjArticleRender = lvjArticleRender;
 
 window.LVJ_CATS = LVJ_CATS;
 window.LVJ_SLUGS = LVJ_SLUGS;
-```
