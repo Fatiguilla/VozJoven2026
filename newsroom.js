@@ -1,4 +1,4 @@
-
+```javascript
 const LVJ_KEY = 'lvj_publicaciones_v2';
 
 // =============================================
@@ -85,7 +85,15 @@ const lvjDate = value => {
 
   const parts = String(value).slice(0, 10).split('-').map(Number);
 
-  if (parts.length !== 3 || parts.some(Number.isNaN)) {
+  if (
+    parts.length !== 3 ||
+    parts.some(Number.isNaN) ||
+    parts[0] < 1 ||
+    parts[1] < 1 ||
+    parts[1] > 12 ||
+    parts[2] < 1 ||
+    parts[2] > 31
+  ) {
     return 'Fecha no indicada';
   }
 
@@ -111,12 +119,15 @@ const lvjNormalizeCategory = category => {
   const key = original.toLocaleLowerCase('es');
 
   return LVJ_CATEGORY_ALIASES[key] ||
-    LVJ_CATEGORY_ALIASES[key.normalize('NFD').replace(/[\u0300-\u036f]/g, '')] ||
+    LVJ_CATEGORY_ALIASES[
+      key.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    ] ||
     original;
 };
 
 const lvjSlug = category => {
   const normalized = lvjNormalizeCategory(category);
+
   return LVJ_SLUGS[normalized] ||
     String(category || 'presentacion')
       .toLowerCase()
@@ -126,7 +137,9 @@ const lvjSlug = category => {
       .replace(/^-|-$/g, '');
 };
 
-// Convierte una fila de Supabase al formato utilizado por la página.
+// =============================================
+// CONVERTIR UNA FILA DE SUPABASE
+// =============================================
 const lvjFromDatabase = row => ({
   id: row.id,
   title: row.title || 'Sin título',
@@ -151,7 +164,7 @@ const lvjFromDatabase = row => ({
 });
 
 // =============================================
-// CARGAR NOTICIAS
+// CARGAR TODAS LAS NOTICIAS
 // =============================================
 async function lvjPosts() {
   if (!lvjSupabase) {
@@ -174,22 +187,19 @@ async function lvjPosts() {
     console.log('Noticias recibidas de Supabase:', data.length);
 
     const databasePosts = data.map(lvjFromDatabase);
-    const localPosts = lvjLocalPosts();
 
-    // La base de datos es la fuente principal.
-    // Si está vacía, se utiliza el respaldo local.
     if (databasePosts.length > 0) {
       return databasePosts;
     }
 
-    return localPosts;
+    return lvjLocalPosts();
   } catch (error) {
     console.error('No se pudo conectar con Supabase:', error);
     return lvjLocalPosts();
   }
 }
 
-// Conservada para compatibilidad con el código antiguo.
+// Compatibilidad con el código antiguo.
 const lvjSave = posts => {
   localStorage.setItem(LVJ_KEY, JSON.stringify(posts));
 };
@@ -198,11 +208,14 @@ const lvjSave = posts => {
 // TARJETA DE NOTICIA
 // =============================================
 function lvjCard(post) {
-  const articleUrl = `articulo.html?id=${encodeURIComponent(post.id)}`;
+  const articleUrl =
+    `articulo.html?id=${encodeURIComponent(String(post.id ?? ''))}`;
+
   const imageUrl = post.cover || '';
 
   return `
     <article class="publication-card">
+
       ${imageUrl ? `
         <a href="${articleUrl}">
           <img
@@ -228,20 +241,26 @@ function lvjCard(post) {
         ${lvjEsc(lvjDate(post.date))}
       </p>
 
-      ${post.summary ? `<p>${lvjEsc(post.summary)}</p>` : ''}
+      ${post.summary
+        ? `<p>${lvjEsc(post.summary)}</p>`
+        : ''}
 
       <div class="publication-card__footer">
         <small>
-          ${post.author ? `Por ${lvjEsc(post.author)}` : 'La Voz Joven'}
+          ${post.author
+            ? `Por ${lvjEsc(post.author)}`
+            : 'La Voz Joven'}
         </small>
+
         <a href="${articleUrl}">Leer noticia →</a>
       </div>
+
     </article>
   `;
 }
 
 // =============================================
-// MOSTRAR TODAS LAS NOTICIAS EN LA PORTADA
+// MOSTRAR NOTICIAS EN LA PORTADA
 // =============================================
 async function lvjHomeRender() {
   const container = document.querySelector('#dateArchive');
@@ -312,10 +331,12 @@ async function lvjSectionRender(category) {
     document.querySelector('#resultCount') ||
     document.querySelector('#categoryResultsCount');
 
-  const emptyElement =
-    document.querySelector('#categoryEmpty');
+  const emptyElement = document.querySelector('#categoryEmpty');
 
-  const query = (titleInput?.value || '').toLocaleLowerCase('es').trim();
+  const query = (titleInput?.value || '')
+    .toLocaleLowerCase('es')
+    .trim();
+
   const date = dateInput?.value || '';
   const selectedCategory = lvjNormalizeCategory(category);
 
@@ -323,7 +344,8 @@ async function lvjSectionRender(category) {
     const posts = (await lvjPosts())
       .filter(post =>
         lvjNormalizeCategory(post.category) === selectedCategory &&
-        (!query || (post.title || '').toLocaleLowerCase('es').includes(query)) &&
+        (!query ||
+          (post.title || '').toLocaleLowerCase('es').includes(query)) &&
         (!date || post.date === date)
       )
       .sort((a, b) =>
@@ -344,6 +366,7 @@ async function lvjSectionRender(category) {
     }
   } catch (error) {
     console.error('Error mostrando noticias de la sección:', error);
+
     container.innerHTML =
       '<p class="empty-news">No se pudieron cargar las noticias de esta sección.</p>';
   }
@@ -351,40 +374,93 @@ async function lvjSectionRender(category) {
 
 // =============================================
 // MOSTRAR UN ARTÍCULO INDIVIDUAL
+// CONSULTA DIRECTA POR ID EN SUPABASE
 // =============================================
 async function lvjArticleRender() {
   const container = document.querySelector('#articleContent');
   if (!container) return;
 
-  container.innerHTML =
-    '<p class="empty-news">Cargando artículo...</p>';
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
 
-  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) {
+    container.innerHTML = `
+      <h1>No se recibió el ID de la noticia</h1>
+      <p>El enlace no contiene el identificador de la publicación.</p>
+      <a href="index.html">Volver a la página principal</a>
+    `;
+
+    console.error('Falta el parámetro id:', window.location.href);
+    return;
+  }
+
+  if (!lvjSupabase) {
+    container.innerHTML = `
+      <h1>No se pudo conectar con las noticias</h1>
+      <p>La conexión con Supabase no está disponible.</p>
+      <a href="index.html">Volver a la página principal</a>
+    `;
+
+    console.error('Supabase no está inicializado.');
+    return;
+  }
+
+  container.innerHTML =
+    '<p class="empty-news">Cargando noticia...</p>';
 
   try {
-    const posts = await lvjPosts();
-    const post = posts.find(item => String(item.id) === String(id));
+    console.log('Buscando noticia con ID:', id);
 
-    if (!post) {
+    const { data: row, error } = await lvjSupabase
+      .from('posts')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error consultando Supabase:', error);
+
       container.innerHTML = `
-        <h1>Noticia no encontrada</h1>
-        <p>La publicación no existe o no se ha podido cargar desde la base de datos.</p>
+        <h1>No se pudo consultar la noticia</h1>
+        <p>${lvjEsc(error.message)}</p>
+        <a href="index.html">Volver a la página principal</a>
       `;
+
       return;
     }
 
+    if (!row) {
+      console.error('No se encontró una noticia con el ID:', id);
+
+      container.innerHTML = `
+        <h1>Noticia no encontrada</h1>
+        <p>
+          No se encontró una publicación con ese identificador.
+          Comprueba que el enlace corresponda a una noticia existente.
+        </p>
+        <a href="index.html">Volver a la página principal</a>
+      `;
+
+      return;
+    }
+
+    const post = lvjFromDatabase(row);
     const gallery = Array.isArray(post.gallery) ? post.gallery : [];
 
+    const categoryUrl = `${lvjSlug(post.category)}.html`;
+
     container.innerHTML = `
-      <a class="section-kicker" href="${lvjSlug(post.category)}.html">
-        ${lvjEsc(lvjNormalizeCategory(post.category))}
+      <a class="section-kicker" href="${categoryUrl}">
+        ${lvjEsc(post.category)}
       </a>
 
       <h1>${lvjEsc(post.title)}</h1>
 
       <p class="article-meta">
         ${lvjEsc(lvjDate(post.date))}
-        · ${post.author ? `Por ${lvjEsc(post.author)}` : 'La Voz Joven'}
+        · ${post.author
+          ? `Por ${lvjEsc(post.author)}`
+          : 'La Voz Joven'}
       </p>
 
       ${post.cover ? `
@@ -405,13 +481,17 @@ async function lvjArticleRender() {
         : ''}
 
       <div class="article-body">
-        ${(post.text || '').split(/\n\s*\n/).map(paragraph =>
-          `<p>${lvjEsc(paragraph).replace(/\n/g, '<br>')}</p>`
-        ).join('')}
+        ${(post.text || '')
+          .split(/\n\s*\n/)
+          .map(paragraph =>
+            `<p>${lvjEsc(paragraph).replace(/\n/g, '<br>')}</p>`
+          )
+          .join('')}
       </div>
 
       ${gallery.length ? `
         <h2>Galería de imágenes</h2>
+
         <div class="news-gallery">
           ${gallery.map((image, index) => `
             <figure>
@@ -422,16 +502,26 @@ async function lvjArticleRender() {
                   loading="lazy"
                 >
               ` : ''}
-              <figcaption>${lvjEsc(image.caption || '')}</figcaption>
+
+              ${image.caption
+                ? `<figcaption>${lvjEsc(image.caption)}</figcaption>`
+                : ''}
             </figure>
           `).join('')}
         </div>
       ` : ''}
     `;
+
+    console.log('Noticia cargada correctamente:', post.title);
+
   } catch (error) {
-    console.error('Error cargando el artículo:', error);
-    container.innerHTML =
-      '<p class="empty-news">No se pudo cargar esta noticia.</p>';
+    console.error('Error inesperado al cargar el artículo:', error);
+
+    container.innerHTML = `
+      <h1>Error al cargar la noticia</h1>
+      <p>${lvjEsc(error.message || 'Ocurrió un error inesperado.')}</p>
+      <a href="index.html">Volver a la página principal</a>
+    `;
   }
 }
 
@@ -444,5 +534,7 @@ window.lvjCard = lvjCard;
 window.lvjSectionRender = lvjSectionRender;
 window.lvjHomeRender = lvjHomeRender;
 window.lvjArticleRender = lvjArticleRender;
+
 window.LVJ_CATS = LVJ_CATS;
 window.LVJ_SLUGS = LVJ_SLUGS;
+```
