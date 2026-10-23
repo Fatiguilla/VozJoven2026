@@ -1,1 +1,68 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Noticia | La Voz Joven</title><link rel="stylesheet" href="styles.css"></head><body><header class="site-header"><div class="container header-inner"><a class="brand" href="index.html"><img src="assets/logo-la-voz-joven.jpeg" alt="La Voz Joven" style="max-width:210px;max-height:70px;object-fit:contain"></a><a class="nav-back" href="index.html">← Página principal</a></div></header><main class="article-page"><div id="articleContent"><p>Cargando noticia…</p></div><a class="nav-back" href="index.html">← Volver a La Voz Joven</a></main><script src="newsroom.js"></script><script>lvjArticleRender();</script></body></html>
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Noticia | La Voz Joven</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+
+      <a class="brand" href="index.html">
+        <img
+          src="assets/logo-la-voz-joven.jpeg"
+          alt="La Voz Joven"
+          style="max-width:210px; max-height:70px; object-fit:contain;"
+        >
+      </a>
+
+      <a class="nav-back" href="index.html">
+        ← Página principal
+      </a>
+
+    </div>
+  </header>
+
+  <main class="article-page">
+
+    <div id="articleContent">
+      <p class="empty-news">Cargando noticia...</p>
+    </div>
+
+    <a class="nav-back" href="index.html">
+      ← Volver a La Voz Joven
+    </a>
+
+  </main>
+
+  <!-- 1. Cargar primero la biblioteca de Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- 2. Cargar las funciones de La Voz Joven -->
+  <script src="newsroom.js"></script>
+
+  <!-- 3. Mostrar el artículo solicitado -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof window.lvjArticleRender === 'function') {
+        window.lvjArticleRender();
+      } else {
+        document.getElementById('articleContent').innerHTML = `
+          <h1>No se pudo cargar la noticia</h1>
+          <p>Verifica que el archivo newsroom.js esté disponible.</p>
+          <a href="index.html">Volver a la página principal</a>
+        `;
+      }
+    });
+  </script>
+
+</body>
+</html>
+```
