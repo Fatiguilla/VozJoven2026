@@ -11,6 +11,7 @@
 
 <body>
 
+  <!-- ENCABEZADO -->
   <header class="site-header">
     <div class="container header-inner">
 
@@ -29,6 +30,7 @@
     </div>
   </header>
 
+  <!-- CONTENIDO DEL ARTÍCULO -->
   <main class="article-page">
 
     <div id="articleContent">
@@ -41,27 +43,30 @@
 
   </main>
 
-  <!-- 1. Cargar primero la biblioteca de Supabase -->
+  <!-- CARGAR SUPABASE PRIMERO -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- 2. Cargar las funciones de La Voz Joven -->
+  <!-- CARGAR LAS FUNCIONES DEL PERIÓDICO -->
   <script src="newsroom.js"></script>
 
-  <!-- 3. Mostrar el artículo solicitado -->
+  <!-- MOSTRAR EL ARTÍCULO -->
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener('load', function () {
       if (typeof window.lvjArticleRender === 'function') {
         window.lvjArticleRender();
       } else {
-        document.getElementById('articleContent').innerHTML = `
-          <h1>No se pudo cargar la noticia</h1>
-          <p>Verifica que el archivo newsroom.js esté disponible.</p>
-          <a href="index.html">Volver a la página principal</a>
-        `;
+        const container = document.getElementById('articleContent');
+
+        if (container) {
+          container.innerHTML = `
+            <h1>No se pudo cargar la noticia</h1>
+            <p>Comprueba que newsroom.js se haya cargado correctamente.</p>
+            <a href="index.html">Volver a la página principal</a>
+          `;
+        }
       }
     });
   </script>
 
 </body>
 </html>
-```
