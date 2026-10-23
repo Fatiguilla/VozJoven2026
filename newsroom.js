@@ -1,7 +1,7 @@
 
 const LVJ_KEY = 'lvj_publicaciones_v2';
 
-const SUPABASE_URL = 'https://wsfdjmhpfqwunyguloqo.supabase.co/rest/v1/';
+const SUPABASE_URL = 'https://wsfdjmhpfqwunyguloqo.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_-1dCf4mJ0AgDVKXXUt7Z9g_wOA-jgmt';
 
 const lvjSupabase = window.supabase.createClient(
@@ -196,7 +196,7 @@ async function lvjArticleRender() {
       <h2>Galería de imágenes</h2>
       <div class="news-gallery">
         ${p.gallery.map((g, i) => `<figure>
-          <img src="${lvjEsc(g.src || '')}" alt="${lvjEsc(g.alt || 'Fotografía ' + (i + 1))}">
+          <img src="${lvjEsc(g.url || g.src || '')}" alt="${lvjEsc(g.alt || 'Fotografía ' + (i + 1))}">
           <figcaption>${lvjEsc(g.caption || '')}</figcaption>
         </figure>`).join('')}
       </div>` : ''}
