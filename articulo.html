@@ -1,72 +1,390 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1">
 
-  <title>Noticia | La Voz Joven</title>
+<title>Noticia | La Voz Joven</title>
 
-  <link rel="stylesheet" href="styles.css">
+<meta name="description"
+      content="Lee las noticias y reportajes de La Voz Joven.">
+
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
+      rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+.vj-reading{
+  max-width:860px;
+  margin:auto;
+  padding:40px 22px 60px;
+}
+.vj-reading #articleContent h1{
+  font:800 clamp(2.2rem,5.5vw,4.2rem)/1.13
+       "Playfair Display",serif;
+  color:#072968;
+  letter-spacing:-.025em;
+  margin:16px 0 18px;
+}
+.vj-reading .article-meta{
+  color:#667085;
+  font-weight:600;
+  margin-bottom:24px;
+}
+.vj-reading .article-summary{
+  font-size:clamp(1.17rem,2vw,1.42rem);
+  line-height:1.55;
+  font-weight:600;
+  color:#35435b;
+  margin:32px 0;
+}
+.vj-reading .article-cover{
+  width:100%;
+  max-height:620px;
+  object-fit:cover;
+  border-radius:18px;
+}
+.vj-reading .article-body{
+  font:400 clamp(1.06rem,1.6vw,1.19rem)/1.95
+       Georgia,serif;
+  color:#29374d;
+  margin:28px 0 45px;
+}
+.vj-reading .article-body p{
+  margin:0 0 1.5em;
+}
+.vj-reading figure{
+  margin:22px 0;
+}
+.vj-reading figcaption{
+  font-size:.88rem;
+  color:#667085;
+  margin-top:9px;
+}
+.vj-reading .news-gallery{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+.vj-reading .news-gallery img{
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  border-radius:12px;
+}
+.vj-header{
+  background:white;
+  border-bottom:1px solid #e2e8f0;
+}
+.vj-header-inner{
+  max-width:1140px;
+  margin:auto;
+  padding:16px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+.vj-header img{
+  max-width:195px;
+  max-height:70px;
+  object-fit:contain;
+}
+.vj-header a{
+  color:#072968;
+  font-weight:800;
+}
+.vj-reading-tools{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:20px 0;
+  border-top:1px solid #e2e8f0;
+  border-bottom:1px solid #e2e8f0;
+  margin:35px 0;
+}
+.vj-reading-tools button,
+.vj-reading-tools a{
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  border:1px solid #dbe2ec;
+  border-radius:10px;
+  padding:12px 16px;
+  background:#f7f9fc;
+  color:#072968;
+  font-weight:800;
+  cursor:pointer;
+  font-size:.88rem;
+  text-decoration:none;
+}
+.vj-reading-tools .vj-whatsapp{
+  background:#16834b;
+  color:white;
+  border-color:#16834b;
+}
+.vj-related{
+  background:#f3f6fa;
+  padding:50px 20px;
+}
+.vj-related-inner{
+  max-width:1140px;
+  margin:auto;
+}
+.vj-related h2{
+  font:800 2.1rem "Playfair Display",serif;
+  color:#072968;
+  margin:0 0 25px;
+}
+.vj-related-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+}
+.vj-message{
+  color:#657184;
+  padding:20px 0;
+}
+.vj-footer{
+  background:#072968;
+  color:white;
+  text-align:center;
+  padding:24px;
+}
+.vj-back{
+  display:inline-block;
+  color:#072968;
+  font-weight:800;
+  margin:16px 0;
+}
+@media(max-width:720px){
+  .vj-related-grid{
+    grid-template-columns:1fr;
+  }
+  .vj-reading .news-gallery{
+    grid-template-columns:1fr;
+  }
+  .vj-header-inner{
+    flex-wrap:wrap;
+  }
+}
+@media print{
+  .vj-header,
+  .vj-reading-tools,
+  .vj-related,
+  .vj-footer,
+  .vj-back{
+    display:none!important;
+  }
+  .vj-reading{
+    max-width:100%;
+    padding:0;
+  }
+  .vj-reading .article-body{
+    color:#000;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- ENCABEZADO -->
-  <header class="site-header">
-    <div class="container header-inner">
-
-      <a class="brand" href="index.html">
-        <img
-          src="assets/logo-la-voz-joven.jpeg"
-          alt="La Voz Joven"
-          style="max-width:210px; max-height:70px; object-fit:contain;"
-        >
-      </a>
-
-      <a class="nav-back" href="index.html">
-        ← Página principal
-      </a>
-
-    </div>
-  </header>
-
-  <!-- CONTENIDO DEL ARTÍCULO -->
-  <main class="article-page">
-
-    <div id="articleContent">
-      <p class="empty-news">Cargando noticia...</p>
-    </div>
-
-    <a class="nav-back" href="index.html">
-      ← Volver a La Voz Joven
+<header class="vj-header">
+  <div class="vj-header-inner">
+    <a href="index.html">
+      <img src="assets/logo-la-voz-joven.jpeg"
+           alt="La Voz Joven">
     </a>
 
-  </main>
+    <a href="index.html">
+      ← Volver al periódico
+    </a>
+  </div>
+</header>
 
-  <!-- CARGAR SUPABASE PRIMERO -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<main>
 
-  <!-- CARGAR LAS FUNCIONES DEL PERIÓDICO -->
-  <script src="newsroom.js"></script>
+  <article class="vj-reading">
 
-  <!-- MOSTRAR EL ARTÍCULO -->
-  <script>
-    window.addEventListener('load', function () {
-      if (typeof window.lvjArticleRender === 'function') {
-        window.lvjArticleRender();
-      } else {
-        const container = document.getElementById('articleContent');
+    <a href="index.html" class="vj-back">
+      ← Inicio
+    </a>
 
-        if (container) {
-          container.innerHTML = `
-            <h1>No se pudo cargar la noticia</h1>
-            <p>Comprueba que newsroom.js se haya cargado correctamente.</p>
-            <a href="index.html">Volver a la página principal</a>
-          `;
-        }
-      }
-    });
-  </script>
+    <!-- NOTICIA ORIGINAL -->
+    <div id="articleContent">
+      <p class="vj-message">
+        Cargando noticia...
+      </p>
+    </div>
+
+    <!-- COMPARTIR -->
+    <div class="vj-reading-tools"
+         id="shareTools" hidden>
+
+      <a id="shareWhatsApp"
+         class="vj-whatsapp"
+         href="#"
+         target="_blank"
+         rel="noopener noreferrer">
+        Compartir por WhatsApp
+      </a>
+
+      <button id="copyLink" type="button">
+        Copiar enlace
+      </button>
+
+      <button id="printArticle" type="button">
+        Imprimir noticia
+      </button>
+
+    </div>
+
+    <p id="copyMessage"
+       class="vj-message"
+       role="status"
+       aria-live="polite"></p>
+
+    <a href="index.html" class="vj-back">
+      ← Volver a todas las noticias
+    </a>
+
+  </article>
+
+  <!-- NOTICIAS RELACIONADAS -->
+
+  <section class="vj-related" id="relatedSection" hidden>
+    <div class="vj-related-inner">
+
+      <span class="section-kicker">
+        SIGUE LEYENDO
+      </span>
+
+      <h2>También te puede interesar</h2>
+
+      <div id="relatedNews"
+           class="vj-related-grid"></div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="vj-footer">
+  © <span id="year"></span>
+  La Voz Joven · Edición Digital
+</footer>
+
+<!-- BIBLIOTECA SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- SISTEMA ACTUAL DE NOTICIAS -->
+<script src="newsroom.js"></script>
+
+<script>
+const $ = id => document.getElementById(id);
+
+$("year").textContent = new Date().getFullYear();
+
+const articleId =
+  new URLSearchParams(location.search).get("id");
+
+function setupSharing(post) {
+
+  const url = new URL(location.href);
+  const title = post.title || "La Voz Joven";
+
+  // Actualizar título de la pestaña
+  document.title = title + " | La Voz Joven";
+
+  // Compartir la noticia por WhatsApp
+  const message = title + "\n" + url.href;
+
+  $("shareWhatsApp").href =
+    "https://api.whatsapp.com/send?text=" +
+    encodeURIComponent(message);
+
+  $("shareTools").hidden = false;
+
+  $("copyLink").addEventListener("click",async () => {
+    try {
+      await navigator.clipboard.writeText(url.href);
+
+      $("copyMessage").textContent =
+        "¡Enlace copiado correctamente!";
+
+    } catch(error) {
+      $("copyMessage").textContent =
+        "No se pudo copiar automáticamente. " +
+        "Puedes copiar la dirección desde tu navegador.";
+    }
+  });
+
+  $("printArticle").addEventListener("click",() => {
+    window.print();
+  });
+}
+
+function showRelated(posts,currentPost) {
+
+  const related = posts
+    .filter(post =>
+      String(post.id) !== String(currentPost.id) &&
+      post.category === currentPost.category
+    )
+    .slice(0,3);
+
+  if(!related.length) {
+    $("relatedSection").hidden = true;
+    return;
+  }
+
+  $("relatedNews").innerHTML =
+    related.map(lvjCard).join("");
+
+  $("relatedSection").hidden = false;
+}
+
+async function initializeArticle() {
+
+  // Primero mostramos la noticia usando
+  // la función que ya funciona en tu proyecto.
+  await lvjArticleRender();
+
+  if(!articleId) return;
+
+  try {
+
+    // Recuperar la noticia y las relacionadas.
+    const posts = await lvjPosts();
+
+    const currentPost = posts.find(
+      post => String(post.id) === String(articleId)
+    );
+
+    if(!currentPost) return;
+
+    setupSharing(currentPost);
+
+    showRelated(posts,currentPost);
+
+  } catch(error) {
+    // No ocultamos el artículo si falla
+    // la carga de noticias relacionadas.
+    console.error(
+      "No se pudieron preparar los complementos:",
+      error
+    );
+  }
+}
+
+initializeArticle();
+</script>
 
 </body>
 </html>
