@@ -1,55 +1,220 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Panel de publicación | La Voz Joven</title>
+
   <link rel="stylesheet" href="styles.css">
+
   <style>
-    .admin-page{max-width:980px;margin:2rem auto;padding:0 1rem}
-    .admin-card{background:#fff;border-radius:16px;padding:clamp(1rem,3vw,2rem);box-shadow:0 8px 30px #18233812}
-    .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
-    .admin-card label{display:block;font-weight:600;margin:.8rem 0 .35rem}
-    .admin-card input:not([type=file]),.admin-card select,.admin-card textarea{width:100%;box-sizing:border-box;padding:.75rem;border:1px solid #ccd2da;border-radius:8px;font:inherit}
-    .admin-card textarea{min-height:150px}
-    .admin-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1rem}
-    .upload-preview{display:flex;gap:.6rem;flex-wrap:wrap;margin:.5rem 0}
-    .upload-preview img{width:120px;height:90px;object-fit:cover;border-radius:8px}
-    .hidden{display:none!important}
-    #loginMessage,#publishMessage{min-height:1.4em}
+    .admin-page {
+      max-width: 980px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .admin-card {
+      background: #fff;
+      color: #182338;
+      border-radius: 16px;
+      padding: clamp(1rem, 3vw, 2rem);
+      box-shadow: 0 8px 30px #18233812;
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .admin-card label {
+      display: block;
+      font-weight: 600;
+      margin: .8rem 0 .35rem;
+    }
+
+    .admin-card input:not([type=file]),
+    .admin-card select,
+    .admin-card textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: .75rem;
+      border: 1px solid #ccd2da;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    .admin-card textarea {
+      min-height: 150px;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .upload-preview {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin: .5rem 0;
+    }
+
+    .upload-preview img {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #loginMessage,
+    #publishMessage {
+      min-height: 1.4em;
+      margin-top: 1rem;
+    }
+
+    .admin-login {
+      max-width: 440px;
+      margin: 1rem auto;
+    }
+
+    .admin-login h2 {
+      text-align: center;
+    }
+
+    .admin-login .btn {
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .admin-note {
+      color: #64748b;
+      font-size: .9rem;
+    }
   </style>
 </head>
+
 <body>
+
   <header class="site-header">
     <div class="container header-inner">
+
       <a class="brand" href="index.html">
-        <img src="assets/logo-la-voz-joven.jpeg" alt="La Voz Joven" style="max-width:210px;max-height:70px;object-fit:contain">
+        <img
+          src="assets/logo-la-voz-joven.jpeg"
+          alt="La Voz Joven"
+          style="max-width:210px;max-height:70px;object-fit:contain"
+        >
       </a>
-      <a href="index.html" class="nav-back">← Volver al periódico</a>
+
+      <a href="index.html" class="nav-back">
+        ← Volver al periódico
+      </a>
+
     </div>
   </header>
 
   <main class="admin-page">
     <section class="admin-card">
-      <span class="section-kicker">ÁREA DE REDACCIÓN</span>
-      <h1>Panel de publicación</h1>
-      <p>Redacta y publica noticias en la sección correspondiente.</p>
 
-      <form id="loginForm">
-        <label for="password">Contraseña de acceso</label>
-        <input id="password" type="password" required autocomplete="current-password" placeholder="Ingresa la contraseña">
-        <button class="btn btn-primary" type="submit">Ingresar</button>
-        <p id="loginMessage" role="status" aria-live="polite"></p>
+      <span class="section-kicker">
+        ÁREA DE REDACCIÓN
+      </span>
+
+      <h1>Panel de publicación</h1>
+
+      <p>
+        Administración de noticias del periódico
+        digital La Voz Joven.
+      </p>
+
+      <!-- INICIO DE SESIÓN -->
+
+      <form id="loginForm" class="admin-login">
+
+        <h2>Acceso de administradora</h2>
+
+        <p class="admin-note">
+          Ingresa con tu cuenta registrada
+          en Supabase.
+        </p>
+
+        <label for="email">
+          Correo electrónico
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          required
+          autocomplete="username"
+          placeholder="Correo de administradora"
+        >
+
+        <label for="password">
+          Contraseña
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          required
+          autocomplete="current-password"
+          placeholder="Contraseña de Supabase"
+        >
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+          id="loginButton"
+        >
+          Ingresar
+        </button>
+
+        <p
+          id="loginMessage"
+          role="status"
+          aria-live="polite"
+        ></p>
+
       </form>
 
+      <!-- FORMULARIO DE NOTICIAS -->
+
       <form id="newsForm" class="hidden">
+
+        <h2>Crear nueva publicación</h2>
+
         <div class="admin-grid">
+
           <div>
-            <label for="title">Titular de la noticia *</label>
-            <input id="title" required maxlength="140" placeholder="Escribe un titular claro">
+            <label for="title">
+              Titular de la noticia *
+            </label>
+
+            <input
+              id="title"
+              required
+              maxlength="140"
+              placeholder="Escribe el titular"
+            >
           </div>
+
           <div>
-            <label for="category">Sección *</label>
+            <label for="category">
+              Sección de la noticia *
+            </label>
+
             <select id="category" required>
               <option value="Presentación">Presentación</option>
               <option value="Opinión personal">Opinión personal</option>
@@ -64,155 +229,434 @@
               <option value="Clasificados">Clasificados</option>
             </select>
           </div>
+
           <div>
-            <label for="date">Fecha de publicación *</label>
+            <label for="date">
+              Fecha de publicación *
+            </label>
+
             <input id="date" type="date" required>
           </div>
+
           <div>
-            <label for="author">Autor / fuente</label>
-            <input id="author" maxlength="100" placeholder="Nombre del periodista">
+            <label for="author">
+              Autor o fuente
+            </label>
+
+            <input
+              id="author"
+              maxlength="100"
+              placeholder="Nombre del periodista"
+            >
           </div>
+
         </div>
 
-        <label for="summary">Resumen para la página principal</label>
-        <textarea id="summary" rows="3" maxlength="350" placeholder="Síntesis breve que aparecerá junto al titular."></textarea>
+        <label for="summary">
+          Resumen de la noticia
+        </label>
 
-        <label for="cover">Fotografía principal *</label>
-        <input id="cover" type="file" accept="image/*" required>
-        <div id="coverPreview" class="upload-preview"></div>
+        <textarea
+          id="summary"
+          rows="3"
+          maxlength="350"
+          placeholder="Resumen para la portada"
+        ></textarea>
+
+        <label for="cover">
+          Fotografía principal *
+        </label>
+
+        <input
+          id="cover"
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+          required
+        >
+
+        <div
+          id="coverPreview"
+          class="upload-preview"
+        ></div>
 
         <div class="admin-grid">
+
           <div>
-            <label for="coverAlt">Descripción de la foto</label>
-            <input id="coverAlt" placeholder="Qué aparece en la fotografía">
+            <label for="coverAlt">
+              Descripción de la fotografía
+            </label>
+
+            <input
+              id="coverAlt"
+              placeholder="Qué aparece en la imagen"
+            >
           </div>
+
           <div>
-            <label for="coverCaption">Pie de foto</label>
-            <input id="coverCaption" placeholder="Lugar, fecha o crédito fotográfico">
+            <label for="coverCaption">
+              Pie de fotografía
+            </label>
+
+            <input
+              id="coverCaption"
+              placeholder="Lugar o crédito fotográfico"
+            >
           </div>
+
         </div>
 
-        <label for="gallery">Fotografías adicionales (opcional)</label>
-        <input id="gallery" type="file" accept="image/*" multiple>
-        <div id="galleryPreview" class="upload-preview"></div>
+        <label for="gallery">
+          Fotografías adicionales
+        </label>
 
-        <label for="content">Contenido completo de la noticia *</label>
-        <textarea id="content" required placeholder="Redacta aquí la noticia completa. Separa los párrafos con una línea en blanco."></textarea>
+        <input
+          id="gallery"
+          type="file"
+          accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+          multiple
+        >
+
+        <div
+          id="galleryPreview"
+          class="upload-preview"
+        ></div>
+
+        <label for="content">
+          Contenido completo de la noticia *
+        </label>
+
+        <textarea
+          id="content"
+          required
+          placeholder="Escribe la noticia completa. Separa los párrafos con una línea en blanco."
+        ></textarea>
 
         <div class="admin-actions">
-          <button class="btn btn-primary" id="publishButton" type="submit">Publicar noticia</button>
-          <button class="btn btn-ghost" id="clearForm" type="button">Limpiar formulario</button>
-          <button class="btn btn-ghost" id="logout" type="button">Cerrar sesión</button>
+
+          <button
+            class="btn btn-primary"
+            id="publishButton"
+            type="submit"
+          >
+            Publicar noticia
+          </button>
+
+          <button
+            class="btn btn-ghost"
+            id="clearForm"
+            type="button"
+          >
+            Limpiar formulario
+          </button>
+
+          <button
+            class="btn btn-ghost"
+            id="logout"
+            type="button"
+          >
+            Cerrar sesión
+          </button>
+
         </div>
-        <p id="publishMessage" role="status" aria-live="polite"></p>
+
+        <p
+          id="publishMessage"
+          role="status"
+          aria-live="polite"
+        ></p>
+
       </form>
+
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = 'https://wsfdjmhpfqwunyguloqo.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_-1dCf4mJ0AgDVKXXUt7Z9g_wOA-jgmt';
-    const ADMIN_PASSWORD = '12345';
+  <!-- LIBRERÍA SUPABASE -->
 
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const $ = selector => document.querySelector(selector);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+
+    // CONFIGURACIÓN DEL PROYECTO
+
+    const SUPABASE_URL =
+      'https://wsfdjmhpfqwunyguloqo.supabase.co';
+
+    const SUPABASE_KEY =
+      'sb_publishable_-1dCf4mJ0AgDVKXXUt7Z9g_wOA-jgmt';
+
+    const ADMIN_UID =
+      'c1ac9281-e837-4c6f-8c98-b769d27a8fc4';
+
+    const db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const $ = selector =>
+      document.querySelector(selector);
 
     const loginForm = $('#loginForm');
     const newsForm = $('#newsForm');
     const loginMessage = $('#loginMessage');
     const publishMessage = $('#publishMessage');
-    const params = new URLSearchParams(location.search);
+
+    const params =
+      new URLSearchParams(window.location.search);
+
+    // SECCIONES DEL PERIÓDICO
 
     const slugToCategory = {
-      'presentacion':'Presentación',
-      'opinion-personal':'Opinión personal',
-      'educacion':'Educación',
-      'salud':'Salud',
-      'cultura':'Cultura',
-      'investigacion':'Investigación',
-      'desarrollo-local':'Desarrollo local',
-      'deporte':'Deporte',
-      'matando-el-tiempo':'Matando el tiempo',
-      'tu-opinion-cuenta':'Tu opinión cuenta',
-      'clasificados':'Clasificados'
+      'presentacion': 'Presentación',
+      'opinion-personal': 'Opinión personal',
+      'educacion': 'Educación',
+      'salud': 'Salud',
+      'cultura': 'Cultura',
+      'investigacion': 'Investigación',
+      'desarrollo-local': 'Desarrollo local',
+      'deporte': 'Deporte',
+      'matando-el-tiempo': 'Matando el tiempo',
+      'tu-opinion-cuenta': 'Tu opinión cuenta',
+      'clasificados': 'Clasificados'
     };
 
-    const today = () =>
-      new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-        .toISOString().slice(0, 10);
+    function today() {
+      const now = new Date();
+
+      return new Date(
+        now.getTime() -
+        now.getTimezoneOffset() * 60000
+      ).toISOString().slice(0, 10);
+    }
+
+    function restoreCategory() {
+      const slug = params.get('seccion');
+
+      if (slugToCategory[slug]) {
+        $('#category').value = slugToCategory[slug];
+      }
+    }
 
     $('#date').value = today();
+    restoreCategory();
 
-    if (slugToCategory[params.get('seccion')]) {
-      $('#category').value = slugToCategory[params.get('seccion')];
-    }
+    // MOSTRAR Y OCULTAR PANEL
 
     function showEditor() {
       loginForm.classList.add('hidden');
       newsForm.classList.remove('hidden');
     }
 
-    loginForm.addEventListener('submit', event => {
-      event.preventDefault();
-
-      if ($('#password').value === ADMIN_PASSWORD) {
-        sessionStorage.setItem('lvj_admin_unlocked', 'yes');
-        loginMessage.textContent = '';
-        showEditor();
-      } else {
-        loginMessage.textContent = 'Contraseña incorrecta. Intenta nuevamente.';
-        $('#password').value = '';
-        $('#password').focus();
-      }
-    });
-
-    if (sessionStorage.getItem('lvj_admin_unlocked') === 'yes') {
-      showEditor();
+    function showLogin() {
+      newsForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
     }
 
+    function isAdmin(session) {
+      return session?.user?.id === ADMIN_UID;
+    }
+
+    function checkAdmin(session) {
+      if (isAdmin(session)) {
+        showEditor();
+        return true;
+      }
+
+      showLogin();
+      return false;
+    }
+
+    // INICIO DE SESIÓN
+
+    loginForm.addEventListener(
+      'submit',
+      async event => {
+
+        event.preventDefault();
+
+        const button = $('#loginButton');
+        button.disabled = true;
+
+        loginMessage.textContent =
+          'Verificando tus credenciales...';
+
+        try {
+
+          const { data, error } =
+            await db.auth.signInWithPassword({
+              email: $('#email').value.trim(),
+              password: $('#password').value
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          if (!isAdmin(data.session)) {
+            await db.auth.signOut();
+
+            throw new Error(
+              'Esta cuenta no tiene permisos de administradora.'
+            );
+          }
+
+          loginMessage.textContent = '';
+          $('#password').value = '';
+
+          showEditor();
+
+        } catch (error) {
+
+          console.error(error);
+
+          loginMessage.textContent =
+            'No se pudo ingresar: ' +
+            (error.message || 'Error de autenticación');
+
+          $('#password').value = '';
+
+        } finally {
+
+          button.disabled = false;
+
+        }
+
+      }
+    );
+
+    // COMPROBAR SESIÓN EXISTENTE
+
+    db.auth.onAuthStateChange(
+      (event, session) => {
+        checkAdmin(session);
+      }
+    );
+
+    db.auth.getSession().then(({ data, error }) => {
+
+      if (error) {
+        console.error(error);
+      }
+
+      checkAdmin(data?.session);
+
+    });
+
+    // VALIDACIÓN DE FOTOGRAFÍAS
+
+    const allowedTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/webp'
+    ];
+
     function validImage(file) {
-      return file &&
-        file.type.startsWith('image/') &&
-        file.size <= 10 * 1024 * 1024;
+
+      return Boolean(
+        file &&
+        allowedTypes.includes(file.type) &&
+        file.size <= 10 * 1024 * 1024
+      );
+
     }
 
     function preview(files, target) {
+
       target.innerHTML = '';
 
       for (const file of files) {
+
         if (!validImage(file)) {
-          alert('Selecciona imágenes válidas de menos de 10 MB.');
+
+          alert(
+            'Utiliza imágenes JPG, PNG o WEBP de máximo 10 MB.'
+          );
+
           target.innerHTML = '';
           return false;
         }
 
-        const image = document.createElement('img');
+        const image =
+          document.createElement('img');
+
         image.alt = 'Vista previa';
-        image.src = URL.createObjectURL(file);
+
+        const url = URL.createObjectURL(file);
+        image.src = url;
+
+        image.onload = () => {
+          URL.revokeObjectURL(url);
+        };
+
         target.appendChild(image);
       }
 
       return true;
     }
 
-    $('#cover').addEventListener('change', event => {
-      preview(Array.from(event.target.files).slice(0, 1), $('#coverPreview'));
-    });
+    $('#cover').addEventListener(
+      'change',
+      event => {
 
-    $('#gallery').addEventListener('change', event => {
-      preview(Array.from(event.target.files), $('#galleryPreview'));
-    });
+        preview(
+          Array.from(event.target.files).slice(0, 1),
+          $('#coverPreview')
+        );
 
-    async function uploadImage(file, folder) {
-      if (!validImage(file)) {
-        throw new Error('Selecciona una fotografía válida de menos de 10 MB.');
+      }
+    );
+
+    $('#gallery').addEventListener(
+      'change',
+      event => {
+
+        preview(
+          Array.from(event.target.files),
+          $('#galleryPreview')
+        );
+
+      }
+    );
+
+    // COMPROBAR AUTORIZACIÓN ANTES DE PUBLICAR
+
+    async function requireAdmin() {
+
+      const { data, error } =
+        await db.auth.getUser();
+
+      if (error || data?.user?.id !== ADMIN_UID) {
+
+        throw new Error(
+          'Sesión no autorizada. Vuelve a iniciar sesión.'
+        );
+
       }
 
-      const extension = (file.name.split('.').pop() || 'jpg')
-        .toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+      return data.user;
+    }
 
-      const path = folder + '/' + crypto.randomUUID() + '.' + extension;
+    // SUBIR FOTOGRAFÍAS A SUPABASE
+
+    async function uploadImage(file, folder) {
+
+      await requireAdmin();
+
+      if (!validImage(file)) {
+
+        throw new Error(
+          'La fotografía debe ser JPG, PNG o WEBP y pesar menos de 10 MB.'
+        );
+
+      }
+
+      const extension =
+        file.type === 'image/png' ? 'png' :
+        file.type === 'image/webp' ? 'webp' : 'jpg';
+
+      const path =
+        folder + '/' +
+        crypto.randomUUID() + '.' +
+        extension;
 
       const { error } = await db.storage
         .from('noticias')
@@ -221,88 +665,214 @@
           upsert: false
         });
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
-      return db.storage.from('noticias').getPublicUrl(path).data.publicUrl;
+      const { data } = db.storage
+        .from('noticias')
+        .getPublicUrl(path);
+
+      return data.publicUrl;
     }
 
-    newsForm.addEventListener('submit', async event => {
-      event.preventDefault();
+    // PUBLICAR NOTICIA
 
-      const button = $('#publishButton');
-      button.disabled = true;
-      publishMessage.textContent = 'Subiendo fotografías y guardando la noticia…';
+    newsForm.addEventListener(
+      'submit',
+      async event => {
 
-      try {
-        const coverUrl = await uploadImage($('#cover').files[0], 'portadas');
-        const gallery = [];
+        event.preventDefault();
 
-        for (const file of Array.from($('#gallery').files)) {
-          const url = await uploadImage(file, 'galeria');
-          gallery.push({
-            url,
-            alt: file.name,
-            caption: ''
-          });
-        }
-
-        const post = {
-          title: $('#title').value.trim(),
-          category: $('#category').value,
-          date: $('#date').value,
-          author: $('#author').value.trim(),
-          summary: $('#summary').value.trim(),
-          content: $('#content').value.trim(),
-          cover_url: coverUrl,
-          cover_alt: $('#coverAlt').value.trim(),
-          cover_caption: $('#coverCaption').value.trim(),
-          gallery
-        };
-
-        const { error } = await db.from('posts').insert(post);
-        if (error) throw error;
+        const button = $('#publishButton');
+        button.disabled = true;
 
         publishMessage.textContent =
-          '¡Noticia publicada correctamente en Supabase!';
+          'Subiendo fotografías y guardando noticia...';
+
+        try {
+
+          await requireAdmin();
+
+          const coverFile =
+            $('#cover').files[0];
+
+          if (!validImage(coverFile)) {
+
+            throw new Error(
+              'Selecciona una fotografía principal válida.'
+            );
+          }
+
+          const galleryFiles =
+            Array.from($('#gallery').files);
+
+          if (!galleryFiles.every(validImage)) {
+
+            throw new Error(
+              'Revisa el formato o tamaño de las imágenes adicionales.'
+            );
+          }
+
+          const title =
+            $('#title').value.trim();
+
+          const content =
+            $('#content').value.trim();
+
+          if (!title || !content) {
+
+            throw new Error(
+              'El titular y contenido son obligatorios.'
+            );
+
+          }
+
+          const coverUrl =
+            await uploadImage(
+              coverFile,
+              'portadas'
+            );
+
+          const gallery = [];
+
+          for (const file of galleryFiles) {
+
+            const url =
+              await uploadImage(
+                file,
+                'galeria'
+              );
+
+            gallery.push({
+              url: url,
+              alt: file.name,
+              caption: ''
+            });
+          }
+
+          const post = {
+
+            title: title,
+
+            category:
+              $('#category').value,
+
+            date:
+              $('#date').value,
+
+            author:
+              $('#author').value.trim(),
+
+            summary:
+              $('#summary').value.trim(),
+
+            content: content,
+
+            cover_url: coverUrl,
+
+            cover_alt:
+              $('#coverAlt').value.trim(),
+
+            cover_caption:
+              $('#coverCaption').value.trim(),
+
+            gallery: gallery
+
+          };
+
+          const { error } = await db
+            .from('posts')
+            .insert(post);
+
+          if (error) {
+            throw error;
+          }
+
+          publishMessage.textContent =
+            '¡Noticia publicada correctamente en Supabase!';
+
+          newsForm.reset();
+
+          $('#date').value = today();
+
+          $('#coverPreview').innerHTML = '';
+          $('#galleryPreview').innerHTML = '';
+
+          restoreCategory();
+
+        } catch (error) {
+
+          console.error(error);
+
+          publishMessage.textContent =
+            'No se pudo publicar: ' +
+            (error.message ||
+              'Revisa los permisos de Supabase.');
+
+        } finally {
+
+          button.disabled = false;
+
+        }
+
+      }
+    );
+
+    // LIMPIAR FORMULARIO
+
+    $('#clearForm').addEventListener(
+      'click',
+      () => {
 
         newsForm.reset();
+
+        $('#date').value = today();
+
+        $('#coverPreview').innerHTML = '';
+        $('#galleryPreview').innerHTML = '';
+
+        publishMessage.textContent = '';
+
+        restoreCategory();
+
+      }
+    );
+
+    // CERRAR SESIÓN
+
+    $('#logout').addEventListener(
+      'click',
+      async () => {
+
+        const { error } =
+          await db.auth.signOut();
+
+        if (error) {
+          publishMessage.textContent =
+            'No se pudo cerrar la sesión: ' +
+            error.message;
+          return;
+        }
+
+        newsForm.reset();
+
         $('#date').value = today();
         $('#coverPreview').innerHTML = '';
         $('#galleryPreview').innerHTML = '';
 
-        if (slugToCategory[params.get('seccion')]) {
-          $('#category').value = slugToCategory[params.get('seccion')];
-        }
-      } catch (error) {
-        console.error(error);
-        publishMessage.textContent =
-          'No se pudo publicar: ' +
-          (error.message || 'revisa las políticas de Supabase.');
-      } finally {
-        button.disabled = false;
+        showLogin();
+
+        $('#password').value = '';
+
+        publishMessage.textContent = '';
+        loginMessage.textContent =
+          'Sesión cerrada correctamente.';
+
       }
-    });
+    );
 
-    $('#clearForm').addEventListener('click', () => {
-      newsForm.reset();
-      $('#date').value = today();
-      $('#coverPreview').innerHTML = '';
-      $('#galleryPreview').innerHTML = '';
-      publishMessage.textContent = '';
-
-      if (slugToCategory[params.get('seccion')]) {
-        $('#category').value = slugToCategory[params.get('seccion')];
-      }
-    });
-
-    $('#logout').addEventListener('click', () => {
-      sessionStorage.removeItem('lvj_admin_unlocked');
-      newsForm.reset();
-      newsForm.classList.add('hidden');
-      loginForm.classList.remove('hidden');
-      $('#password').value = '';
-      publishMessage.textContent = '';
-    });
   </script>
+
 </body>
 </html>
