@@ -1,1 +1,409 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Investigación | La Voz Joven</title><link rel="stylesheet" href="styles.css"></head><body><header class="site-header"><div class="container header-inner"><a class="brand" href="index.html"><img src="assets/logo-la-voz-joven.jpeg" alt="La Voz Joven" style="max-width:210px;max-height:70px;object-fit:contain"></a><a class="btn btn-primary" href="admin.html?seccion=investigacion">🔒 Publicar en esta sección</a></div><nav class="main-nav"><div class="container nav-inner"><a href="index.html">Inicio</a><a href="presentacion.html">Presentación</a><a href="opinion-personal.html">Opinión personal</a><a href="educacion.html">Educación</a><a href="salud.html">Salud</a><a href="cultura.html">Cultura</a><a href="investigacion.html">Investigación</a><a href="desarrollo-local.html">Desarrollo local</a><a href="deporte.html">Deporte</a><a href="matando-el-tiempo.html">Matando el tiempo</a><a href="tu-opinion-cuenta.html">Tu opinión cuenta</a><a href="clasificados.html">Clasificados</a></div></nav></header><main class="section-page"><a class="nav-back" href="index.html">← Volver a la página principal</a><div class="section-top"><div><span class="section-kicker">LA VOZ JOVEN · SECCIÓN</span><h1>Investigación</h1><p>Noticias, reportajes y novedades de investigación, ordenadas por fecha de publicación.</p></div><a class="btn btn-primary" href="admin.html?seccion=investigacion">+ Publicar noticia</a></div><div class="section-tools"><input id="filterTitle" type="search" placeholder="Buscar por título…"><input id="filterDate" type="date" aria-label="Filtrar por fecha"><span id="resultCount"></span></div><div id="sectionNews" class="publication-grid"></div></main><footer class="site-footer"><div class="container"><p>© <span id="year">2026</span> La Voz Joven · Edición digital</p></div></footer><script src="newsroom.js"></script><script>lvjSectionRender('Investigación');document.querySelector('#filterTitle').addEventListener('input',()=>lvjSectionRender('Investigación'));document.querySelector('#filterDate').addEventListener('change',()=>lvjSectionRender('Investigación'));document.querySelector('#year').textContent=new Date().getFullYear();</script></body></html>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>La Voz Joven | Edición Digital</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- CABECERA -->
+
+  <header class="site-header">
+
+    <div class="container header-inner">
+
+      <a class="brand" href="index.html">
+        <img
+          src="assets/logo-la-voz-joven.jpeg"
+          alt="La Voz Joven"
+          style="max-width:210px;max-height:70px;object-fit:contain"
+        >
+      </a>
+
+      <a
+        id="headerPublish"
+        class="btn btn-primary"
+        href="admin.html"
+      >
+        🔒 Publicar en esta sección
+      </a>
+
+    </div>
+
+    <!-- MENÚ DE NAVEGACIÓN -->
+
+    <nav class="main-nav">
+      <div class="container nav-inner" id="mainMenu">
+
+        <a href="index.html">Inicio</a>
+
+        <a href="presentacion.html">
+          Presentación
+        </a>
+
+        <a href="opinion-personal.html">
+          Opinión personal
+        </a>
+
+        <a href="educacion.html">
+          Educación
+        </a>
+
+        <a href="salud.html">
+          Salud
+        </a>
+
+        <a href="cultura.html">
+          Cultura
+        </a>
+
+        <a href="investigacion.html">
+          Investigación
+        </a>
+
+        <a href="desarrollo-local.html">
+          Desarrollo local
+        </a>
+
+        <a href="deporte.html">
+          Deporte
+        </a>
+
+        <a href="matando-el-tiempo.html">
+          Matando el tiempo
+        </a>
+
+        <a href="tu-opinion-cuenta.html">
+          Tu opinión cuenta
+        </a>
+
+        <a href="clasificados.html">
+          Clasificados
+        </a>
+
+      </div>
+    </nav>
+
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+
+  <main class="section-page">
+
+    <a class="nav-back" href="index.html">
+      ← Volver a la página principal
+    </a>
+
+    <div class="section-top">
+
+      <div>
+
+        <span class="section-kicker">
+          LA VOZ JOVEN · SECCIÓN
+        </span>
+
+        <h1 id="sectionTitle">
+          Noticias
+        </h1>
+
+        <p id="sectionDescription">
+          Noticias de La Voz Joven.
+        </p>
+
+      </div>
+
+      <a
+        id="sectionPublish"
+        class="btn btn-primary"
+        href="admin.html"
+      >
+        + Publicar noticia
+      </a>
+
+    </div>
+
+    <!-- BUSCADOR Y FILTROS -->
+
+    <div class="section-tools">
+
+      <input
+        id="filterTitle"
+        type="search"
+        placeholder="Buscar por título..."
+        aria-label="Buscar noticias por título"
+      >
+
+      <input
+        id="filterDate"
+        type="date"
+        aria-label="Filtrar por fecha"
+      >
+
+      <span id="resultCount"></span>
+
+    </div>
+
+    <!-- AQUÍ APARECEN LAS NOTICIAS -->
+
+    <div
+      id="sectionNews"
+      class="publication-grid"
+      aria-live="polite"
+    >
+
+      <p class="empty-news">
+        Cargando noticias...
+      </p>
+
+    </div>
+
+  </main>
+
+  <!-- PIE DE PÁGINA -->
+
+  <footer class="site-footer">
+
+    <div class="container">
+
+      <p>
+        © <span id="year">2026</span>
+        La Voz Joven · Edición digital
+      </p>
+
+    </div>
+
+  </footer>
+
+  <!-- LIBRERÍA SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- SISTEMA DE NOTICIAS EXISTENTE -->
+
+  <script src="newsroom.js"></script>
+
+  <!-- CONFIGURACIÓN DE SECCIONES -->
+
+  <script>
+
+    // Relación entre archivos y categorías
+
+    const sections = {
+
+      "presentacion": {
+        title: "Presentación",
+        description:
+          "Conoce nuestro periódico, sus integrantes y las novedades de La Voz Joven."
+      },
+
+      "opinion-personal": {
+        title: "Opinión personal",
+        description:
+          "Reflexiones, columnas y puntos de vista de nuestros autores."
+      },
+
+      "educacion": {
+        title: "Educación",
+        description:
+          "Noticias, reportajes y novedades del ámbito educativo."
+      },
+
+      "salud": {
+        title: "Salud",
+        description:
+          "Información, prevención y noticias relacionadas con la salud."
+      },
+
+      "cultura": {
+        title: "Cultura",
+        description:
+          "Arte, tradiciones, expresiones culturales y acontecimientos."
+      },
+
+      "investigacion": {
+        title: "Investigación",
+        description:
+          "Reportajes, investigaciones y análisis de temas relevantes."
+      },
+
+      "desarrollo-local": {
+        title: "Desarrollo local",
+        description:
+          "Proyectos, iniciativas y noticias sobre nuestra comunidad."
+      },
+
+      "deporte": {
+        title: "Deporte",
+        description:
+          "Actualidad deportiva, competencias y protagonistas del deporte."
+      },
+
+      "matando-el-tiempo": {
+        title: "Matando el tiempo",
+        description:
+          "Entretenimiento, curiosidades y contenidos para disfrutar."
+      },
+
+      "tu-opinion-cuenta": {
+        title: "Tu opinión cuenta",
+        description:
+          "Un espacio para las opiniones, ideas y voces de nuestros lectores."
+      },
+
+      "clasificados": {
+        title: "Clasificados",
+        description:
+          "Anuncios y publicaciones de interés para la comunidad."
+      }
+
+    };
+
+    // Identificar automáticamente la página
+
+    const filename = window.location.pathname
+      .split("/")
+      .pop()
+      .replace(/\.html$/i, "")
+      .toLowerCase();
+
+    const section = sections[filename];
+
+    function showError(message) {
+
+      const container =
+        document.getElementById("sectionNews");
+
+      container.textContent = "";
+
+      const paragraph =
+        document.createElement("p");
+
+      paragraph.className = "empty-news";
+      paragraph.textContent = message;
+
+      container.appendChild(paragraph);
+    }
+
+    // Inicializar el periódico
+
+    function initializeSection() {
+
+      document.getElementById("year")
+        .textContent = new Date().getFullYear();
+
+      if (!section) {
+
+        showError(
+          "No se encontró la configuración de esta sección."
+        );
+
+        return;
+      }
+
+      // Colocar el nombre correcto
+
+      document.title =
+        section.title + " | La Voz Joven";
+
+      document.getElementById("sectionTitle")
+        .textContent = section.title;
+
+      document.getElementById("sectionDescription")
+        .textContent = section.description;
+
+      // Configurar botón de publicación
+
+      const publishLink =
+        "admin.html?seccion=" +
+        encodeURIComponent(filename);
+
+      document.getElementById("headerPublish")
+        .href = publishLink;
+
+      document.getElementById("sectionPublish")
+        .href = publishLink;
+
+      // Resaltar la sección activa
+
+      document.querySelectorAll(
+        "#mainMenu a"
+      ).forEach(link => {
+
+        if (
+          link.getAttribute("href") ===
+          filename + ".html"
+        ) {
+
+          link.setAttribute(
+            "aria-current", "page"
+          );
+
+        }
+
+      });
+
+      // Comprobar que newsroom.js esté cargado
+
+      if (
+        typeof window.lvjSectionRender !==
+        "function"
+      ) {
+
+        showError(
+          "No se pudo cargar el sistema de noticias. Actualiza la página."
+        );
+
+        console.error(
+          "No está disponible lvjSectionRender"
+        );
+
+        return;
+      }
+
+      // Mostrar noticias de la categoría
+
+      function renderNews() {
+
+        window.lvjSectionRender(
+          section.title
+        );
+
+      }
+
+      // Buscar noticias por título
+
+      document.getElementById("filterTitle")
+        .addEventListener(
+          "input",
+          renderNews
+        );
+
+      // Filtrar noticias por fecha
+
+      document.getElementById("filterDate")
+        .addEventListener(
+          "change",
+          renderNews
+        );
+
+      // Cargar noticias al abrir la página
+
+      renderNews();
+
+    }
+
+    initializeSection();
+
+  </script>
+
+</body>
+</html>
